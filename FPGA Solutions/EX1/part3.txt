@@ -1,0 +1,28 @@
+LIBRARY ieee;
+USE ieee.std_logic_1164.all;
+ENTITY mux2to1 IS
+     PORT(SW: IN STD_LOGIC_VECTOR(9 DOWNTO 0);
+     LEDG: OUT STD_LOGIC_VECTOR(9 DOWNTO 0));  
+END mux2to1;
+
+ARCHITECTURE Behaviour OF mux2to1 IS
+	SIGNAL U,V,W,M,X : std_LOGIC_VECTOR(1 dowNTO 0);
+	SIGNAL S1,S0 : STD_LOGIC;
+BEGIN 
+	S1 <= SW (9);
+	S0 <= SW (8);
+	
+	U <= SW (7 DOWNTO 6);
+	V <= SW (5 DOWNTO 4);
+	W <= SW (3 DOWNTO 2);--2 BÝT
+	
+	X(0)<=(NOT(S0) AND U(0)) OR (S0 AND V(0));
+	X(1)<=(NOT(S0) AND U(1)) OR (S0 AND V(1));
+	M(0)<=(NOT(S1) AND X(0)) OR (S1 AND W(0));
+	M(1)<=(NOT(S1) AND X(1)) OR (S1 AND W(1));
+	
+	LEDG(9 DOWNTO 2)<=SW(9 DOWNTO 2);--ledlerin cýkýsý
+	LEDG(1 DOWNTO 0)<=M(1 DOWNTO 0);--ledlerin cýkýsý
+
+END Behaviour;--Tools'tan Programmer'a girip kodu makineye aktarýyoruz...
+
