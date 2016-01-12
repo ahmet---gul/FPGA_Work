@@ -1,0 +1,91 @@
+LIBRARY ieee;
+USE ieee.std_logic_1164.all;
+USE ieee.std_logic_unsigned.all;
+
+ENTITY ex2part6 IS
+     PORT(SW: IN STD_LOGIC_VECTOR(9 DOWNTO 0);
+	  HEX0,HEX1: OUT STD_LOGIC_VECTOR(0 TO 6));  
+END ex2part6;
+
+ARCHITECTURE Brehh OF ex2part6 IS
+
+signal A:STD_LOGIC_VECTOR(5 DOWNTO 0);
+SIGnal sl,sr:STD_LOGIC_VECTOR(3 dowNTO 0);
+
+ COMPONENT bcd7seg
+ PORT ( bcd : IN STD_LOGIC_VECTOR(3 DOWNTO 0);
+ display : OUT STD_LOGIC_VECTOR(0 TO 6));
+ END COMPONENT;
+
+BEGIN
+
+A(5 DOWNTO 0)<=SW(5 DOWNTO 0);
+
+process(A)
+begin
+if (A<"001010") then
+	sl<="0000";
+	sr<=A(3 DOWNTO 0);
+
+elsif(A<"010100") then
+	sl<="0001";
+	sr<=A(3 DOWNTO 0);
+
+elsif(A<"011110") then
+	sl<="0010";
+	sr<=A(3 DOWNTO 0);
+
+	elsif(A<"101000") then
+	sl<="0011";
+	sr<=A(3 DOWNTO 0);
+
+elsif(A<"110010") then
+	sl<="0100";
+	sr<=A(3 DOWNTO 0);
+
+	elsif(A<"111100") then
+	sl<="0101";
+	sr<=A(3 DOWNTO 0);
+
+else 
+	sl<="0110";
+	sr<=A(3 DOWNTO 0);
+end if;
+end process;
+
+ digit0: bcd7seg PORT MAP (sr, HEX0);
+ digit1: bcd7seg PORT MAP (sl, HEX1);
+
+
+END Brehh;
+
+
+LIBRARY ieee;
+USE ieee.std_logic_1164.all;
+ENTITY bcd7seg IS
+
+ PORT ( bcd : IN STD_LOGIC_VECTOR(3 DOWNTO 0);
+ display : OUT STD_LOGIC_VECTOR(0 TO 6));
+END bcd7seg;
+ARCHITECTURE Behavior OF bcd7seg IS
+BEGIN
+
+ PROCESS (bcd)
+ BEGIN
+ CASE bcd IS
+WHEN "0000" => display <= "0000001";
+ WHEN "0001" => display <= "1001111";
+ WHEN "0010" => display <= "0010010";
+ WHEN "0011" => display <= "0000110";
+ WHEN "0100" => display <= "1001100";
+ WHEN "0101" => display <= "0100100";
+ WHEN "0110" => display <= "0100000";
+ WHEN "0111" => display <= "0001111";
+ WHEN "1000" => display <= "0000000";
+ WHEN "1001" => display <= "0000100";
+ WHEN OTHERS => display <= "1111111";
+ END CASE;
+ END PROCESS;
+ 
+END Behavior;
+	

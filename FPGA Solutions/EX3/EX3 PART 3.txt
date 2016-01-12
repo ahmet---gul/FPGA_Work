@@ -1,0 +1,52 @@
+library ieee;
+use ieee.std_logic_1164.all;
+USE ieee.std_logic_signed.all;
+
+ENTITY ex3part3 is
+	PORT( SW: IN STD_LOGIC_VECTOR(9 DOWNTO 0);
+			LEDG: OUT STD_LOGIC_VECTOR(0 TO 0));
+end ex3part3;
+
+ARCHITECTURE Behh of ex3part3 is
+	SIGNAL Qm, Qs: STD_LOGIC;
+
+	COMPONENT d_Latch
+		PORT ( D,CLK: IN STD_LOGIC;
+					Q: OUT STD_LOGIC);
+	end comPONENT;
+	
+	
+BEGIN
+
+	h0: d_Latch PORT MAP (SW(0),(NOT SW(1)),Qm);
+	h1: d_Latch PORT MAP (Qm,SW(1),Qs);
+	
+	LEDG(0)<=Qs;
+end Behh;
+
+library ieee;
+use ieee.std_logic_1164.all;
+
+ENTITY d_Latch is
+	PORT ( D, CLK: IN STD_LOGIC;
+			Q: OUT STD_LOGIC);
+end d_Latch;
+
+ARCHITECTURE Behh of d_Latch is
+
+	SIGNAL R,R_g, S_g, Qa, Qb: STD_LOGIC;
+	ATTRIBUTE keep: boolean;
+	ATTRIBUTE keep of R, R_g, S_g, Qa, Qb : signal is true;
+	
+BEGIN
+	R<= NOT(D);
+	
+	S_g <= NOT(D AND CLK);
+	R_g <= NOT(R AND CLK);
+	
+
+	Qa <= NOT (S_g AND Qb);
+	Qb <= NOT (R_g AND Qa);
+	
+	Q<=Qa;
+end Behh;

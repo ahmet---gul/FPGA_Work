@@ -1,0 +1,75 @@
+LIBRARY ieee;
+USE ieee.std_logic_1164.all;
+USE ieee.std_logic_unsigned.all;
+
+ENTITY ex2part5 IS
+     PORT(SW: IN STD_LOGIC_VECTOR(9 DOWNTO 0);
+     LEDG: OUT STD_LOGIC_VECTOR(9 DOWNTO 0);
+	  HEX0,HEX1,HEX2,HEX3: OUT STD_LOGIC_VECTOR(6 DOWNTO 0));  
+END ex2part5;
+
+ARCHITECTURE Brehh OF ex2part5 IS
+
+signal A,B,T0,S1:STD_LOGIC_VECTOR(3 DOWNTO 0);
+signal S0:STD_LOGIC_VECTOR(4 DOWNTO 0);
+SIGnal CIN,c1,S2:STD_LOGIC;
+
+	COMPONENT bcd7seg 
+		PORT(	X: IN STD_LOGIC_VECTOR(3 DOWNTO 0);
+				H: OUT STD_LOGIC_VECTOR(6 DOWNTO 0));
+	end comPONENT;
+	
+COMPONENT FULLADDER
+PORT (A,B,CIN: IN STD_LOGIC;
+		S,COUT: OUT STD_LOGIC);
+		
+END COMPONENT;
+
+BEGIN 
+	A(3 DOWNTO 0)<=SW(7 DOWNTO 4);
+	B(3 DOWNTO 0)<=SW(3 DOWNTO 0);
+	
+	CIN<=SW(8);
+	
+	S0<=('0' & A) + ('0' & B) + CIN;
+
+	process(S0)
+	begin
+	if (S0>"01001") then
+			T0<="0110";
+			c1<='1';
+	else 
+		T0<="0000";
+		c1<='0';
+	end if;
+	end process;
+	
+	S1<=S0(3 DOWNTO 0) + T0;
+	S2<=c1;
+	
+	digit0: bcd7seg PORT MAP (A(3 DOWNTO 0), HEX3);
+	digit1: bcd7seg PORT MAP (B(3 DOWNTO 0), HEX2);
+	digit2: bcd7seg PORT MAP (("000" & S2), HEX1);
+	digit3: bcd7seg PORT MAP (S1(3 DOWNTO 0), HEX0);
+
+END Brehh;
+
+LIBRARY ieee;
+USE ieee.std_logic_1164.all;
+
+ENTITY bcd7seg IS
+ PORT ( X : IN STD_LOGIC_VECTOR(3 DOWNTO 0);
+ H : OUT STD_LOGIC_VECTOR(6 DOWNTO 0));
+END bcd7seg;
+
+ARCHITECTURE Behh OF bcd7seg IS
+BEGIN
+	H(0)<=NOT(X(3) or X(1) or not(X(2) xor X(0)));
+	H(1)<=NOT(X(3) or not(x(2)) or not(X(1) xor x(0)));
+	H(2)<=NOT(X(3) OR X(2) OR X(0) OR NOT (X(1)));
+	H(3)<=NOT(X(3) OR (NOT(X(2)) AND (NOT (X(0)) OR X(1))) OR (X(1) AND NOT (X(0))) OR (X(2) AND X(0) AND NOT (X(1))));
+	H(4)<=NOT (NOT (X(0)) AND (NOT (X(2)) OR X(1)));
+	H(5)<=NOT(X(3) OR (X(2) AND NOT (X(1))) OR (NOT (X(0)) AND (X(2) OR NOT (X(1)))));
+	H(6)<=NOT(X(3) OR (X(1) AND NOT (X(0))) OR (X(2) XOR X(1)));
+ 
+ END Behh;
